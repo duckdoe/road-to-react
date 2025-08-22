@@ -13,7 +13,7 @@ const useSemiPersistentState = (key, initialState) => {
 };
 
 const App = () => {
-  const stories = [
+  const initialState = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -33,6 +33,15 @@ const App = () => {
   ];
 
   const [searchTerm, setSearchTerm] = useSemiPersistentState("searchValue", "");
+
+  const [stories, setStories] = React.useState(initialState);
+
+  const hanldeRemoveStory = (item) => {
+    const newStories = stories.filter(
+      (story) => item.objectID !== story.objectID
+    );
+    setStories(newStories);
+  };
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -55,7 +64,7 @@ const App = () => {
         <strong>Search:</strong>
       </InputWithLabel>
       <hr />
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={hanldeRemoveStory} />
     </div>
   );
 };
@@ -93,18 +102,27 @@ const InputWithLabel = ({
   );
 };
 
-const List = ({ list }) =>
-  list.map((item) => <Item key={item.objectID} item={item} />);
+const List = ({ list, onRemoveItem }) =>
+  list.map((item) => (
+    <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
+  ));
 
-const Item = ({ item }) => (
-  <div>
-    <span>
-      <a href={item.url}>{item.title}</a>
-    </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
-  </div>
-);
+const Item = ({ item, onRemoveItem }) => {
+  return (
+    <div>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span>{item.author}</span>
+      <span>{item.num_comments}</span>
+      <span>{item.points}</span>
+      <span>
+        <button type="button" onClick={() => onRemoveItem(item)}>
+          Dismiss
+        </button>
+      </span>
+    </div>
+  );
+};
 
 export default App;
