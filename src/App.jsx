@@ -13,7 +13,7 @@ const useSemiPersistentState = (key, initialState) => {
 };
 
 const App = () => {
-  const initialState = [
+  const initialStories = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -32,9 +32,27 @@ const App = () => {
     },
   ];
 
+  const getAsyncStories = () => {
+    return new Promise((resolve) =>
+      setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+    )
+  };
+
   const [searchTerm, setSearchTerm] = useSemiPersistentState("searchValue", "");
 
-  const [stories, setStories] = React.useState(initialState);
+  const [stories, setStories] = React.useState([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    getAsyncStories()
+      .then((result) => {
+        setStories(result.data.stories);
+        setIsLoading(false);
+      })
+      .catch(() => setIsError(true));
+  }, []);
 
   const hanldeRemoveStory = (item) => {
     const newStories = stories.filter(
@@ -64,7 +82,14 @@ const App = () => {
         <strong>Search:</strong>
       </InputWithLabel>
       <hr />
-      <List list={searchedStories} onRemoveItem={hanldeRemoveStory} />
+
+      {isError && <p>Something went wrong..</p>}
+
+      {isLoading ? (
+        <p>Loading .....</p>
+      ) : (
+        <List list={searchedStories} onRemoveItem={hanldeRemoveStory} />
+      )}
     </div>
   );
 };
