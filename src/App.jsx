@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -48,6 +48,7 @@ const App = () => {
       <InputWithLabel
         id="search"
         value={searchTerm}
+        isFocused
         onInputChange={handleSearch}
         type="text"
       >
@@ -59,11 +60,31 @@ const App = () => {
   );
 };
 
-const InputWithLabel = ({ id, children, value, type, onInputChange }) => {
+const InputWithLabel = ({
+  id,
+  children,
+  value,
+  type,
+  onInputChange,
+  isFocused,
+}) => {
+  const inputRef = React.useRef();
+
+  React.useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
   return (
     <>
       <label htmlFor={id}>{children} </label>
-      <input id={id} onChange={onInputChange} value={value} type={type} />
+      <input
+        ref={inputRef}
+        id={id}
+        onChange={onInputChange}
+        value={value}
+        type={type}
+      />
 
       <p>
         Searching for <strong>{value}</strong>
