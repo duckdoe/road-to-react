@@ -28,9 +28,9 @@ The book contains so many interesting things that i am hoping to get footing in 
 - React Controlled Components 🤓
 - Props Handling (Advanced) 🤓
 - React Side Effects 🤓
-- React Custom Hooks (Advanced)
-- React Fragments
-- Reusable React Components
+- React Custom Hooks (Advanced) 🤓
+- React Fragments 🤓
+- Reusable React Components 🤓
 - Imperative React
 - Inline Handler in React
 - React Asynchronous Data
